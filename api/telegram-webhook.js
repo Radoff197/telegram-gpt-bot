@@ -1,36 +1,49 @@
 const axios = require('axios');
 
-// Токен твоего Телеграм-бота
+// Токен бота Telegram
 const TELEGRAM_TOKEN = '7572364421:AAETj2zFYyGDQZEYwj2-pzjzMig02khs6Pc';
-const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_TOKEN}`;
+const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
 
 // Функция для отправки сообщения обратно в Телеграм
 async function sendMessageToTelegram(chatId, message) {
-    await axios.post(`${TELEGRAM_API_URL}/sendMessage`, {
-        chat_id: chatId,
-        text: message
-    });
+    try {
+        const response = await axios.post(TELEGRAM_API_URL, {
+            chat_id: chatId,
+            text: message
+        });
+        console.log('Сообщение отправлено:', response.data);
+    } catch (error) {
+        console.error('Ошибка при отправке сообщения:', error.response ? error.response.data : error.message);
+    }
 }
 
-// Экспорт функции, которая будет обрабатывать запросы
+// Экспортируем функцию-обработчик для работы с вебхуком Telegram
 export default async function handler(req, res) {
     if (req.method === 'POST') {
         const { message } = req.body;
 
-        // Получаем ID чата и текст сообщения
-        const chatId = message.chat.id;
-        const userMessage = message.text;
+        // Проверяем, что сообщение содержит текст и ID чата
+        if (message && message.chat && message.text) {
+            const chatId = message.chat.id;
+            const userMessage = message.text;
 
-        // Пример обработки сообщения: эхо-ответ
-        const reply = `Вы сказали: ${userMessage}`;
+            console.log(`Получено сообщение от Chat ID ${chatId}: ${userMessage}`);
 
-        // Отправляем эхо-сообщение пользователю
-        await sendMessageToTelegram(chatId, reply);
+            // Формируем эхо-ответ
+            const reply = `Вы сказали: ${userMessage}`;
 
-        // Ответ на запрос Телеграма
-        return res.status(200).json({ status: 'ok' });
+            // Отправляем эхо-сообщение пользователю
+            await sendMessageToTelegram(chatId, reply);
+
+            // Ответ для Telegram, что запрос был успешно обработан
+            return res.status(200).json({ status: 'ok' });
+        } else {
+            // Если сообщение не содержит нужных данных
+            console.log('Некорректный запрос:', req.body);
+            return res.status(400).json({ error: 'Bad Request: message or chat not found' });
+        }
+    } else {
+        // Если запрос не является POST
+        return res.status(404).send('Not found');
     }
-
-    // Если запрос не POST — вернем 404
-    return res.status(404).send('Not found');
 }
