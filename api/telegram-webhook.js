@@ -4,9 +4,9 @@ const axios = require('axios');
 const TELEGRAM_TOKEN = '7572364421:AAETj2zFYyGDQZEYwj2-pzjzMig02khs6Pc';
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
 
-// Токен GPT (API ключ)
-const GPT_API_KEY = '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';
-const GPT_API_URL = 'https://api.openai.com/v1/completions';  // Это базовый URL для запросов к OpenAI
+// Токен GPT (новый API ключ)
+const GPT_API_KEY = 'sk-meTem4sxNQBk0tI2klHL6loDvx5KvQ3IOD_IVubY50T3BlbkFJcAHGdAw9s_FmwmLVuVBfeqVIwLkim6RvEyGTuVh4YA';
+const GPT_API_URL = 'https://api.openai.com/v1/completions';
 
 // Функция для отправки сообщения обратно в Телеграм
 async function sendMessageToTelegram(chatId, message) {
@@ -30,7 +30,7 @@ async function sendMessageToGPT(userMessage) {
             {
                 model: 'gpt-4',  // Используем модель GPT-4
                 prompt: userMessage,
-                max_tokens: 100,  // Определи лимит на количество токенов, который подходит
+                max_tokens: 100,  // Определи лимит на количество токенов
             },
             {
                 headers: {
