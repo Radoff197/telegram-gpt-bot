@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 // Токен твоего Телеграм-бота
-const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
+const TELEGRAM_TOKEN = '7572364421:AAETj2zFYyGDQZEYwj2-pzjzMig02khs6Pc';
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_TOKEN}`;
 
 // Функция для отправки сообщения обратно в Телеграм
@@ -34,4 +34,3 @@ export default async function handler(req, res) {
     // Если запрос не POST — вернем 404
     return res.status(404).send('Not found');
 }
-
