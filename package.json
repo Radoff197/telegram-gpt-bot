@@ -1,0 +1,13 @@
+{
+  "name": "telegram-gpt-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot with GPT integration",
+  "main": "api/telegram-webhook.js",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
+  }
+}
+
