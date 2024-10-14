@@ -12,7 +12,7 @@ const GPT_API_URL = 'https://api.openai.com/v1/completions';
 async function sendMessageToTelegram(chatId, message) {
     try {
         const response = await axios.post(TELEGRAM_API_URL, {
-            chat_id: chatId,  // Используем правильный chat_id
+            chat_id: chatId,
             text: message
         });
         console.log('Сообщение отправлено в Telegram:', response.data);
@@ -42,7 +42,7 @@ async function sendMessageToGPT(userMessage) {
         return response.data.choices[0].text.trim();
     } catch (error) {
         console.error('Ошибка при отправке сообщения в GPT:', error.response ? error.response.data : error.message);
-        return 'Произошла ошибка при обработке запроса.';
+        return 'Произошла ошибка при обработке запроса в GPT.';
     }
 }
 
@@ -75,3 +75,4 @@ export default async function handler(req, res) {
     console.log('Неправильный метод запроса:', req.method);
     return res.status(405).json({ error: 'Метод не поддерживается' });
 }
+
