@@ -6,7 +6,7 @@ const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMess
 
 // Токен GPT (API ключ)
 const GPT_API_KEY = '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';
-const GPT_API_URL = 'https://api.openai.com/v1/completions';
+const GPT_API_URL = 'https://api.openai.com/v1/completions';  // Это базовый URL для запросов к OpenAI
 
 // Функция для отправки сообщения обратно в Телеграм
 async function sendMessageToTelegram(chatId, message) {
@@ -21,15 +21,16 @@ async function sendMessageToTelegram(chatId, message) {
     }
 }
 
-// Функция для отправки сообщения в GPT
+// Функция для отправки сообщения в GPT-4
 async function sendMessageToGPT(userMessage) {
+    console.log('Отправляем запрос в GPT-4:', userMessage);  // Логируем отправку сообщения в GPT
     try {
         const response = await axios.post(
             GPT_API_URL,
             {
-                model: 'gpt-3.5-turbo',
+                model: 'gpt-4',  // Используем модель GPT-4
                 prompt: userMessage,
-                max_tokens: 100,
+                max_tokens: 100,  // Определи лимит на количество токенов, который подходит
             },
             {
                 headers: {
@@ -38,10 +39,10 @@ async function sendMessageToGPT(userMessage) {
                 }
             }
         );
-        console.log('Ответ от GPT:', response.data.choices[0].text);
+        console.log('Ответ от GPT-4:', response.data.choices[0].text);  // Логируем ответ от GPT
         return response.data.choices[0].text.trim();
     } catch (error) {
-        console.error('Ошибка при отправке сообщения в GPT:', error.response ? error.response.data : error.message);
+        console.error('Ошибка при отправке сообщения в GPT-4:', error.response ? error.response.data : error.message);
         return 'Произошла ошибка при обработке запроса в GPT.';
     }
 }
@@ -62,8 +63,11 @@ export default async function handler(req, res) {
 
         console.log(`Получено сообщение от Chat ID ${chatId}: ${userMessage}`);
 
-        // Отправляем сообщение в GPT
+        // Отправляем сообщение в GPT-4
         const gptResponse = await sendMessageToGPT(userMessage);
+
+        // Логируем, что отправляем обратно в Telegram
+        console.log(`Отправляем ответ обратно в Telegram для Chat ID ${chatId}: ${gptResponse}`);
 
         // Отправляем ответ обратно в Telegram
         await sendMessageToTelegram(chatId, gptResponse);
@@ -75,4 +79,3 @@ export default async function handler(req, res) {
     console.log('Неправильный метод запроса:', req.method);
     return res.status(405).json({ error: 'Метод не поддерживается' });
 }
-
